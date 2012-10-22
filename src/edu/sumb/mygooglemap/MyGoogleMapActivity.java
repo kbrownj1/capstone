@@ -1,6 +1,9 @@
 package edu.sumb.mygooglemap;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
@@ -84,6 +87,30 @@ public class MyGoogleMapActivity extends MapActivity {
 			public void onClick(View v) {
 				Log.i("MyGoogleMapActivity", "Tapped on EMERGENCY");
 				
+				Builder builder = new AlertDialog.Builder(MyGoogleMapActivity.this);
+				builder.setMessage("Do you want to send EMERGENCY status to everyone?");
+				builder.setCancelable(true);
+				builder.setPositiveButton("YES, DO IT NOW!", new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+				});
+				builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+				});
+				AlertDialog dialog = builder.create();
+				dialog.show();
+
 				// At this point, we need to update the user_info for the user and
 				// send this to the XMPP server.
 			}
@@ -146,9 +173,10 @@ public class MyGoogleMapActivity extends MapActivity {
 	 * 
 	 */
 	void createMarker() {
+		// Start with fresh overlay, since this method adds all points on the map.
+		this.itemizedoverlay.clearOverlays();
+
 		GeoPoint p = this.mapView.getMapCenter();
-		
-		addOtherUsersToMap();
 		
 		/*itemizedoverlay.clearOverlays();
 		itemizedoverlay.addOverlay(new OverlayItem(new GeoPoint(p.getLatitudeE6()-10000, p.getLongitudeE6()-10000), "", ""));
@@ -161,6 +189,8 @@ public class MyGoogleMapActivity extends MapActivity {
 		*/
 		
 		OverlayItem overlayitem = new OverlayItem(p, "Me", "");
+		addOtherUsersToMap();
+		
 		this.itemizedoverlay.addOverlay(overlayitem);
 		if (this.itemizedoverlay.size() > 0) {
 			this.mapView.getOverlays().add(this.itemizedoverlay);
