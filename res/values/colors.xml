@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <resources>
+        <color name="message_me">#009900</color>
+        <color name="message_received">#DDDDDD</color>
+        <color name="message_text">#000000</color>
+        <color name="message_line">#444444</color>
+    </resources>

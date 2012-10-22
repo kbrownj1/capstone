@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+>
+		
+	<!-- Taken from Buddy Cloud -->
+	<!-- Headline, from/to -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_marginTop="2dip"
+        android:layout_marginBottom="3dip"
+    >
+        
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+        >
+            <TextView
+                android:id="@+id/chat_ToTextView"
+                android:text="to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:layout_gravity="left"
+                android:layout_marginLeft="4dip"
+                android:layout_marginRight="4dip"
+            />
+        </LinearLayout>
+    </LinearLayout>
+        
+        <LinearLayout
+            
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+        >
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+            />
+            <TextView
+                android:layout_weight="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dip"
+                android:layout_marginRight="4dip"
+                android:id="@+id/chat_FromTextView"
+                android:text="from"
+                android:maxLines="1"
+                android:singleLine="true"
+            />
+        </LinearLayout>
+		
+	<!--  taken from Buddy Cloud -->
+	<!-- Chat history -->
+    <com.example.capstone.AutoscrollListView
+        android:id="@+id/chat_ChatHistoryList"
+        android:fastScrollEnabled="true"
+        android:smoothScrollbar="true"
+        android:stackFromBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+    />
+		
+		
+		
+		
+		
+		
+	<!-- Input fields  --> 	
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="0">
+	
+		<EditText
+			android:id="@+id/chat_myMessage"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:hint="@string/message_text"
+			android:layout_weight="1" />
+		<Button
+			android:id="@+id/chat_sendMessageButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/sendMessageButtonLabel"
+			android:onClick="sendMessage"
+			android:layout_weight="0" />
+	</LinearLayout>
+	
+</LinearLayout>

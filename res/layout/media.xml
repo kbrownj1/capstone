@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/MainMediaFrame"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/mediaLayout"
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+	
+		<ListView
+			android:id="@+id/mediaList"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:focusable="true"
+			android:layout_weight="2"/>		
+		<ImageButton
+			android:id="@+id/cameraButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/stub"
+			android:onClick="openCamera" />	
+			
+	</LinearLayout>
+	
+</FrameLayout>

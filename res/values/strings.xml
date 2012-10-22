@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, Interface!</string>
+    <string name="app_name">MMMC</string>
+    <string name="message_text">Message</string>
+    <string name="sendMessageButtonLabel">Send</string>
+    <string name="cameraTemp">The camera will go here</string>
+    <string name="map_activity_name">myGoogleMap</string>
+    <string name="emergency">EMERGENCY</string>
+</resources>
