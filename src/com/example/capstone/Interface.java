@@ -71,7 +71,12 @@ public class Interface extends TabActivity {
         
         Log.e(TAG, "Get context");
         this.context = getApplicationContext();
-		
+
+        //TODO this is simulating the BOOT_COMPLETED broadcast, which never seems to
+        // be received by this application.  It will start the IChatService.
+        startIChatService();
+        
+        
         // Gets account information about the currently logged in user
 		this.accountManager = AccountManager.get(this.context);
 		Account accounts[] = this.accountManager.getAccountsByType("com.googlecode.asmack");
@@ -85,7 +90,7 @@ public class Interface extends TabActivity {
 		// The name of the chat room
 		//this.to = "123@conference.jabber.ferrobyte.com";
 		//this.to = "test-miao@conference.peggy-pc";
-		this.to = "123@conference.xmppserver.zapto.org";
+		this.to = this.getResources().getString(R.string.xmpp_server_url);
 		
 		// used to send to and from information in the intents
 		String toFrom = this.to + "/" + this.from;
@@ -197,4 +202,14 @@ public class Interface extends TabActivity {
 	public void onResume(){
 		super.onResume();
 	}
+    
+    /**
+     * Code copied from BootCompletedReceiver -- to initialize the IChatService.
+     */
+    private void startIChatService() {
+        Intent transportService = new Intent();
+        transportService.setAction(IChatService.class.getCanonicalName());
+        this.startService(transportService);
+        Log.i("Interface", "Started IChatservice");
+    }
 }	

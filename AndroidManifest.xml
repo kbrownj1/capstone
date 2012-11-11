@@ -60,11 +60,6 @@
         <activity
             android:name="edu.sumb.mygooglemap.MyGoogleMapActivity"
             android:label="@string/map_activity_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         
         <service android:name="com.example.capstone.ChatService" android:exported="true">

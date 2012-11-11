@@ -41,7 +41,7 @@ public class Group extends Activity{
 		this.database = Database.getDatabase(this.context, null);
 		
 		// TODO: Remove this next line after test is done.
-		addMockUsers(this.database);
+		//addMockUsers(this.database);
 		
 		
 		// Columns to query from the user_info table

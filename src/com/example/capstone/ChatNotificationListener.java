@@ -75,6 +75,7 @@ public class ChatNotificationListener implements PacketListener {
     @Override
 	public void processPacket(Packet packet) {
     	
+    	Log.i("processPacket", packet.toXML());
     	if ( packet instanceof Presence ) {
     		
     		double inLat = 0, inLong = 0;
@@ -106,24 +107,14 @@ public class ChatNotificationListener implements PacketListener {
     				//MUCUser muc = (MUCUser) extension;   no need to create this object
     				isMUC = true;
     				
-    				Log.d("CNL", "ERIK: MUC EXTENSION FOUND");
+    				Log.d("CNL", "ERIK: MUC EXTENSION FOUND, presence type=" + presence.getType());
     			}
     		}
     		
     		//  If a MUC available presence packet comes in, add/update database
     		if( isMUC == true && presence.getType().toString().equals("available") && isGEO == true ) {
     			
-    				ContentValues values = new ContentValues();
-            		values.put("name", presenceFrom);
-            		values.put("lat", inLat);
-            		values.put("long", inLong);
-        			
-            		if( this.database.update("user_info", values, "name='" + presenceFrom + "'", null) < 1 ) {
-            			this.database.insert("user_info", "_id", values);
-            			Log.d("CNL", "ERIK: DATABASE UPDATED, USER " + presenceFrom + " ADDED");
-            		}
-            		else
-            			Log.d("CNL", "ERIK: DATABASE UPDATED, USER " + presenceFrom + " UPDATED");
+    				updateDatabase(presenceFrom, inLat, inLong);
     			}
     	
     		// if a MUC Unavailable presence packet comes in, remove user from database
@@ -145,6 +136,18 @@ public class ChatNotificationListener implements PacketListener {
     	if( packet instanceof Message) {
     		Message msg = (Message)packet;
     		String text = msg.getBody();
+    		
+    		// Extract name
+    		String messageFrom = StringUtils.parseResource( msg.getFrom() );
+
+    		
+    		// Extract lat and lon from message
+    		double inLat = getLat(msg);
+    		double inLon = getLon(msg);
+    		
+    		Log.i("CNL", "recovered name=[" + messageFrom + "], lat/lon=" + inLat + "," + inLon);
+    		
+    		updateDatabase(messageFrom, inLat, inLon);
     		
     		String bareFrom = XMPPUtils.getBareJid(msg.getFrom());
     		String msgFrom = StringUtils.parseResource(msg.getFrom());
@@ -254,5 +257,63 @@ public class ChatNotificationListener implements PacketListener {
             PendingIntent.getActivity(this.context, 0, intent, 0)
         );
         this.notificationManager.notify(tag, 1, notify);
+    }
+    
+    /**
+     * Extract latitude from Message packet
+     * @param msg
+     * @return
+     */
+    private static double getLat(Message msg) {
+    	String xmlString = msg.toXML();
+    	
+    	String latElement = "<lat>";
+    	int iPos = xmlString.indexOf(latElement);
+    	if (iPos >= 0) {
+    		int iPosEnd = xmlString.indexOf("</lat>");
+    		String latString = xmlString.substring(iPos + latElement.length(), iPosEnd);
+    		return Double.parseDouble(latString);
+    	}
+    	return 0;
+    }
+    
+    /**
+     * Extract longitude from Message packet
+     * @param msg
+     * @return
+     */
+    private static double getLon(Message msg) {
+    	String xmlString = msg.toXML();
+    	
+    	String lonElement = "<lon>";
+    	int iPos = xmlString.indexOf(lonElement);
+    	if (iPos >= 0) {
+    		int iPosEnd = xmlString.indexOf("</lon>");
+    		String lonString = xmlString.substring(iPos + lonElement.length(), iPosEnd);
+    		return Double.parseDouble(lonString);
+    	}
+    	return 0;
+    }
+    
+    /**
+     * Insert new record or update the database 
+     * @param name
+     * @param lat
+     * @param lon
+     */
+    private void updateDatabase(String name, double lat, double lon) {
+		ContentValues values = new ContentValues();
+		values.put("name", name);
+		values.put("lat", lat);
+		values.put("long", lon);
+		
+		if (this.database.update("user_info", values, "name='" + name + "'", null) < 1 ) {
+			this.database.insert("user_info", "_id", values);
+			Log.d("CNL", "ERIK: DATABASE UPDATED, USER " + name + " ADDED");
+		}
+		else {
+			Log.d("CNL", "ERIK: DATABASE UPDATED, USER " + name + " UPDATED");
+		}
+
     }
 }
