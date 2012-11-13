@@ -6,5 +6,6 @@
     <string name="sendMessageButtonLabel">Send</string>
     <string name="cameraTemp">The camera will go here</string>
     <string name="map_activity_name">myGoogleMap</string>
+    <string name="gps_activity_name">GPS</string>
     <string name="emergency">EMERGENCY</string>
 </resources>

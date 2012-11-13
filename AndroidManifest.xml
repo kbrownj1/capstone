@@ -1,86 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      android:versionCode="1"
-      android:versionName="1.0" package="com.example.capstone" xmlns:tools="http://schemas.android.com/tools">
-      
-      
-<uses-feature android:name="android.hardware.camera" />
-<uses-feature android:name="android.hardware.camera.autofocus" />
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.capstone"
+    android:versionCode="1"
+    android:versionName="1.0" >
 
-<uses-permission android:name="android.permission.CAMERA"></uses-permission>
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-<uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission>
-<uses-permission android:name="com.googlecode.asmack.intent.XMPP.STANZA.RECEIVE"></uses-permission>
-<uses-permission android:name="com.googlecode.asmack.intent.XMPP.STANZA.SEND"></uses-permission>
-<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
-<!-- Added for maps -->
+    <uses-permission android:name="android.permission.CAMERA" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" >
+    </uses-permission>
+    <uses-permission android:name="com.googlecode.asmack.intent.XMPP.STANZA.RECEIVE" >
+    </uses-permission>
+    <uses-permission android:name="com.googlecode.asmack.intent.XMPP.STANZA.SEND" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
+    </uses-permission>
+
+    <!-- Added for maps -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"/>
-    
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="8" />
 
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/app_name" >
+        <uses-library android:name="com.google.android.maps" />
 
-               <uses-library android:name="com.google.android.maps" />
-        
-        	<activity android:name=".SplashScreen"
-        		  android:theme="@android:style/Theme.NoTitleBar">
+        <activity
+            android:name=".SplashScreen"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        	</activity>
-        
-        <activity android:name=".Interface"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.NoTitleBar">
         </activity>
-        
-        <activity android:name="Group"></activity>
-        
-        <activity android:name=".Chat" tools:ignore="ExportedActivity">
-        <intent-filter>
+        <activity
+            android:name=".Interface"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity android:name="Group" >
+        </activity>
+        <activity
+            android:name=".Chat"
+            tools:ignore="ExportedActivity" >
+            <intent-filter>
                 <action android:name="android.intent.action.SENDTO" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="com.android.im.category.JABBER" />
+
                 <data android:scheme="im" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO" />
+
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="imto" android:host="jabber" />
+
+                <data
+                    android:host="jabber"
+                    android:scheme="imto" />
             </intent-filter>
         </activity>
 
-        
         <!-- Activity added from maps -->
         <activity
             android:name="edu.sumb.mygooglemap.MyGoogleMapActivity"
             android:label="@string/map_activity_name" >
         </activity>
-        
-        <service android:name="com.example.capstone.ChatService" android:exported="true">
-          <intent-filter>
-              <action android:name="com.example.capstone.IChatService"/>
-          </intent-filter>
+
+        <!-- Activity for GPSTracking -->
+        <activity
+            android:name=".GPSTrackingActivity"
+            android:label="@string/gps_activity_name" >
+        </activity>
+
+        <service
+            android:name="com.example.capstone.ChatService"
+            android:exported="true" tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="com.example.capstone.IChatService" />
+            </intent-filter>
         </service>
-          
-        <receiver android:name=".BootCompletedReceiver">
-          <intent-filter>
-            <action android:name="android.intent.action.BOOT_COMPLETED" />
-            <category android:name="android.intent.category.HOME" />
-          </intent-filter>
-          <intent-filter>
-            <action android:name="android.intent.action.TIME_TICK" />
-          </intent-filter>
+
+        <receiver android:name=".BootCompletedReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_TICK" />
+            </intent-filter>
         </receiver>
-        <activity android:name=".Media"></activity>
-        <activity android:name=".PictureTaker"></activity>
-        
+
+        <activity android:name=".Media" >
+        </activity>
+        <activity android:name=".PictureTaker" >
+        </activity>
     </application>
-    
-    
+
 </manifest>

@@ -196,7 +196,7 @@ public class Interface extends TabActivity {
         tabHost.addTab(spec);
         
         //GPS Tab 
-        intent = new Intent().setClass(this, MyGoogleMapActivity.class);
+        intent = new Intent().setClass(this, GPSTrackingActivity.class);
         spec = tabHost.newTabSpec("gps").setIndicator("GPS", res.getDrawable(R.drawable.gps_icon)).setContent(intent);
         tabHost.addTab(spec);
 
