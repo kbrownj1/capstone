@@ -217,9 +217,11 @@ public class MyGoogleMapActivity extends MapActivity {
 	 */
 	@Override
 	protected void onPause() {
-		super.onResume();
-		this.myLocationOverlay.disableMyLocation();
-		this.myLocationOverlay.disableCompass();
+		super.onPause();
+		if (this.myLocationOverlay != null) {
+			this.myLocationOverlay.disableMyLocation();
+			this.myLocationOverlay.disableCompass();
+		}
 		
 	}
 	
