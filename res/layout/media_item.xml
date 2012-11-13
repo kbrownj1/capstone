@@ -7,7 +7,7 @@
 		android:id="@+id/image"
 		android:layout_width="50dip"
 		android:layout_height="50dip"
-		android:src="@drawable/stub"
+		android:src="@drawable/ic_action_camera_white"
 		android:scaleType="centerCrop"
 	/>
 	<LinearLayout

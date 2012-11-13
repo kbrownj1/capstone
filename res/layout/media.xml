@@ -11,19 +11,21 @@
 		android:orientation="vertical"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
-	
+		
+		
 		<ListView
 			android:id="@+id/mediaList"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:focusable="true"
-			android:layout_weight="2"/>		
+			android:layout_weight="2"/>
+				
 		<ImageButton
-			android:id="@+id/cameraButton"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:src="@drawable/stub"
-			android:onClick="openCamera" />	
+		    android:id="@+id/cameraButton"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:onClick="openCamera"
+		    android:src="@drawable/ic_action_camera_grey" />
 			
 	</LinearLayout>
 	
