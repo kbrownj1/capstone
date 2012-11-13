@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     	
-        <!-- <string name="xmpp_server_url">123@conference.openfireserver.hopto.org</string> -->
-        <string name="xmpp_server_url">123@conference.xmppserver.zapto.org</string>
-        <string name="default_user">kbrown@xmppserver.zapto.org</string>
+        <string name="xmpp_server_url">123@conference.openfireserver.hopto.org</string>
+        <!-- <string name="xmpp_server_url">123@conference.xmppserver.zapto.org</string> -->
+        <string name="default_user">miao@openfireserver.hopto.org</string>
 </resources>
