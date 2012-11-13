@@ -164,32 +164,40 @@ public class Interface extends TabActivity {
         
         // Initializes the tabbed interface 
         
+        //Members Tab
         intent = new Intent().setClass(this, Group.class);
-        
-        spec = tabHost.newTabSpec("members").setIndicator("Members", res.getDrawable(R.drawable.stub)).setContent(intent);
+        spec = tabHost.newTabSpec("members").setIndicator("Members", res.getDrawable(R.drawable.group_icon)).setContent(intent);
         tabHost.addTab(spec);
         
         // Encodes the to and from values to be used by the chat application. 
 		Uri uri = Uri.parse("imto://jabber/" + URLEncoder.encode(toFrom));
-       
+		
+		
+       //Chat Tab 
         intent = new Intent(this, Chat.class);
         intent.setData(uri);
-        
-        spec = tabHost.newTabSpec("chat").setIndicator("Chat", res.getDrawable(R.drawable.stub)).setContent(intent);
+        spec = tabHost.newTabSpec("chat").setIndicator("Chat", res.getDrawable(R.drawable.chat_icon)).setContent(intent);
         tabHost.addTab(spec);
         
         // Encodes the to and from values to be used by the chat application. 
 		Uri uri1 = Uri.parse("imto://jabber/" + URLEncoder.encode(toFrom));
         
+		
+		//Media Tab
         intent = new Intent().setClass(this, Media.class);
         intent.setData(uri1);
-        
-        spec = tabHost.newTabSpec("media").setIndicator("Media", res.getDrawable(R.drawable.stub)).setContent(intent);
+        spec = tabHost.newTabSpec("media").setIndicator("Media", res.getDrawable(R.drawable.media_icon)).setContent(intent);
         tabHost.addTab(spec);
     
-        // Map page added to tab
+        
+        // Map tab 
         intent = new Intent().setClass(this, MyGoogleMapActivity.class);
-        spec = tabHost.newTabSpec("map").setIndicator("Map", res.getDrawable(R.drawable.stub)).setContent(intent);
+        spec = tabHost.newTabSpec("map").setIndicator("Map", res.getDrawable(R.drawable.map_icon)).setContent(intent);
+        tabHost.addTab(spec);
+        
+        //GPS Tab 
+        intent = new Intent().setClass(this, MyGoogleMapActivity.class);
+        spec = tabHost.newTabSpec("gps").setIndicator("GPS", res.getDrawable(R.drawable.gps_icon)).setContent(intent);
         tabHost.addTab(spec);
 
         tabHost.setCurrentTab(1);
