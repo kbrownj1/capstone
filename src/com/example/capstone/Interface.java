@@ -192,6 +192,7 @@ public class Interface extends TabActivity {
         
         // Map tab 
         intent = new Intent().setClass(this, MyGoogleMapActivity.class);
+        intent.setData(uri);
         spec = tabHost.newTabSpec("map").setIndicator("Map", res.getDrawable(R.drawable.map_icon)).setContent(intent);
         tabHost.addTab(spec);
         

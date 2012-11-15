@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
@@ -16,8 +17,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.example.capstone.Chat;
 import com.example.capstone.Constants;
 import com.example.capstone.Database;
+import com.example.capstone.GPSTracker;
 import com.example.capstone.R;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -45,6 +48,10 @@ public class MyGoogleMapActivity extends MapActivity {
 	private MyOverlays itemizedoverlay;
 	MyLocationOverlay myLocationOverlay;
 	private Button emergencyButton;
+	
+	// Provided by server
+	String to;
+	String from;
 
 	/*
 	 * (non-Javadoc)
@@ -53,6 +60,14 @@ public class MyGoogleMapActivity extends MapActivity {
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
+		
+		Intent intent = getIntent();
+		String toFrom = intent.getData().getPathSegments().get(0);
+		Log.i(TAG, "message to/from: " + toFrom);
+		String splitToFrom[] = toFrom.split("/");
+		this.to = splitToFrom[0];
+		this.from = splitToFrom[1];
+		
 		setContentView(R.layout.mapactivity); // bind the layout to the activity
 
 		// Configure the Map
@@ -88,18 +103,41 @@ public class MyGoogleMapActivity extends MapActivity {
 				Log.i("MyGoogleMapActivity", "Tapped on EMERGENCY");
 				
 				Builder builder = new AlertDialog.Builder(MyGoogleMapActivity.this);
-				builder.setMessage("Do you want to send EMERGENCY status to everyone?");
+				builder.setMessage(R.string.emergency_msg);
 				builder.setCancelable(true);
-				builder.setPositiveButton("YES, DO IT NOW!", new DialogInterface.OnClickListener() {
+				builder.setPositiveButton(R.string.emergency_yes, new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
+						// If user tapped YES, send an EMERGENCY MESSAGE
 						
+						// create class object
+				        GPSTracker gps = new GPSTracker(MyGoogleMapActivity.this);
+
+						// check if GPS enabled		
+				        if(gps.canGetLocation())
+				        {
+				        	
+				        	Double latitude = Double.valueOf(gps.getLatitude());
+				        	Double longitude = Double.valueOf(gps.getLongitude());
+				        	
+				        	String emergencyString = MyGoogleMapActivity.this.getResources().getString(R.string.emergency_string);
+							Chat.sendMessage(MyGoogleMapActivity.this.getApplicationContext(), emergencyString, MyGoogleMapActivity.this.to, MyGoogleMapActivity.this.from, latitude, longitude);
+							// TODO Auto-generated method stub
+							
+				        }
+				        else
+				        {
+				        	// can't get location
+				        	// GPS or Network is not enabled
+				        	// Ask user to enable GPS/network in settings
+				        	gps.showSettingsAlert();
+				        }
+
 					}
 					
 				});
-				builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+				builder.setNegativeButton(R.string.emergency_no, new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
