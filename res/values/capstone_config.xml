@@ -4,4 +4,5 @@
         <string name="xmpp_server_url">123@conference.openfireserver.hopto.org</string>
         <!-- <string name="xmpp_server_url">123@conference.xmppserver.zapto.org</string> -->
         <string name="default_user">miao@openfireserver.hopto.org</string>
+        <string name="map_key">0E_uVdU6fHEzP5IqrXX_LinSn9sTnJTFrfXoLwQ</string>
 </resources>
