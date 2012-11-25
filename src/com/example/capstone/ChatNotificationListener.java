@@ -114,7 +114,6 @@ public class ChatNotificationListener implements PacketListener {
     		//  If a MUC available presence packet comes in, add/update database
     		if( isMUC == true && presence.getType().toString().equals("available") && isGEO == true ) {
     			
-    				Log.d("CNL", "updating DB from presence, from=" + presenceFrom + ", lat=" + inLat + ", lon=" + inLong );
     				updateDatabase(presenceFrom, inLat, inLong, null);
     			}
     	
@@ -145,11 +144,16 @@ public class ChatNotificationListener implements PacketListener {
     		// Extract lat and lon from message
     		double inLat = getLat(msg);
     		double inLon = getLon(msg);
-    		boolean isEmergency = text.startsWith(this.context.getString(R.string.emergency_message));
+    		Boolean isEmergency = null;
+    		if (text.startsWith(this.context.getString(R.string.emergency_message))) {
+    			isEmergency = Boolean.TRUE;
+    		} else if (text.startsWith(this.context.getString(R.string.cancel_message))) {
+    			isEmergency = Boolean.FALSE;
+    		}
     		
-    		Log.i("CNL", "recovered name=[" + messageFrom + "], lat/lon=" + inLat + "," + inLon + ", isEmergency=" + isEmergency);
+    		Log.i("CNL", "recovered name=[" + messageFrom + "], lat/lon=" + inLat + "," + inLon);
     		
-    		updateDatabase(messageFrom, inLat, inLon, Boolean.valueOf(isEmergency));
+    		updateDatabase(messageFrom, inLat, inLon, isEmergency);
     		
     		String bareFrom = XMPPUtils.getBareJid(msg.getFrom());
     		String msgFrom = StringUtils.parseResource(msg.getFrom());

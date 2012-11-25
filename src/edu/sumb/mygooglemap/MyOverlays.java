@@ -71,10 +71,12 @@ public class MyOverlays extends ItemizedOverlay<OverlayItem> {
 
 	/**
 	 * 
-	 * @param overlay
+	 * @param overlay  item to add as an overlay.  
+	 * 					If value is null, simply redrwas the map
+	 * 					 without adding any new overlay.
 	 */
 	public void addOverlay(OverlayItem overlay) {
-
+		if (overlay != null) {
 			if (this.index < maxNum) {
 				//
 			} else {
@@ -82,7 +84,8 @@ public class MyOverlays extends ItemizedOverlay<OverlayItem> {
 				this.full = true;
 			}
 			this.overlays[this.index++] = overlay;
-			populate();
+		}
+		populate();
 
 
 		/*

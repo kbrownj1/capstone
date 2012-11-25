@@ -1,6 +1,9 @@
 package edu.sumb.mygooglemap;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
+
+import java.net.URLEncoder;
+
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -12,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,6 +55,7 @@ public class MyGoogleMapActivity extends MapActivity {
 	private Button emergencyButton;
 	
 	// Provided by server
+	String toFrom;
 	String to;
 	String from;
 
@@ -63,7 +68,7 @@ public class MyGoogleMapActivity extends MapActivity {
 		super.onCreate(bundle);
 		
 		Intent intent = getIntent();
-		String toFrom = intent.getData().getPathSegments().get(0);
+		this.toFrom = intent.getData().getPathSegments().get(0);
 		Log.i(TAG, "message to/from: " + toFrom);
 		String splitToFrom[] = toFrom.split("/");
 		this.to = splitToFrom[0];
@@ -116,28 +121,19 @@ public class MyGoogleMapActivity extends MapActivity {
 							return;
 						}
 						
-						// create class object
-				        GPSTracker gps = new GPSTracker(MyGoogleMapActivity.this);
-
-						// check if GPS enabled		
-				        if(gps.canGetLocation())
-				        {
 				        	
-				        	Double latitude = Double.valueOf(gps.getLatitude());
-				        	Double longitude = Double.valueOf(gps.getLongitude());
-				        	
-				        	String emergencyString = MyGoogleMapActivity.this.getString(R.string.emergency_message);
-							Chat.sendMessage(MyGoogleMapActivity.this, emergencyString, MyGoogleMapActivity.this.to, MyGoogleMapActivity.this.from);
+			        	String emergencyString = MyGoogleMapActivity.this.getString(R.string.emergency_message);
+						Chat.sendMessage(MyGoogleMapActivity.this, emergencyString, MyGoogleMapActivity.this.to, MyGoogleMapActivity.this.from);
 
-				        }
-				        else
-				        {
-				        	// can't get location
-				        	// GPS or Network is not enabled
-				        	// Ask user to enable GPS/network in settings
-				        	gps.showSettingsAlert();
-				        }
-
+						// call map again to refresh
+				        // Map tab 
+				        // Encodes the to and from values to be used by the chat application. 
+//						Uri uri1 = Uri.parse("imto://jabber/" + URLEncoder.encode(toFrom));
+//				        Intent intent = new Intent().setClass(MyGoogleMapActivity.this, MyGoogleMapActivity.class);
+//				        intent.setData(uri1);
+//				        startActivity(intent);
+//				        finish();
+						MyGoogleMapActivity.this.itemizedoverlay.addOverlay(null);
 					}
 					
 				});
@@ -230,10 +226,10 @@ public class MyGoogleMapActivity extends MapActivity {
 		}
 		*/
 		
-		OverlayItem overlayitem = new OverlayItem(p, "Me", "");
+		//OverlayItem overlayitem = new OverlayItem(p, "Me", "");
 		addOtherUsersToMap();
 		
-		this.itemizedoverlay.addOverlay(overlayitem);
+		//this.itemizedoverlay.addOverlay(overlayitem);
 		if (this.itemizedoverlay.size() > 0) {
 			this.mapView.getOverlays().add(this.itemizedoverlay);
 		}

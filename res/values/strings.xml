@@ -11,6 +11,9 @@
     <string name="emergency_msg">Do you want to send EMERGENCY status to everyone?</string>
     <string name="emergency_yes">YES, DO IT NOW!</string>
     <string name="emergency_no">No</string>
+    <string name="cancel_msg">do you want to cancel EMERGENCY status?</string>
     <string name="emergency_message">EMERGENCY</string>
+    <string name="cancel_message">CANCEL</string>
     <string name="ping_message">PING</string>
+    <string name="wait_for_geo">Please wait while obtaining geo coordinates.</string>
 </resources>

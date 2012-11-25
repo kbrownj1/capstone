@@ -50,6 +50,10 @@ public class GeoLocation {
 				0, new GeoUpdateHandler());
 
 	}
+	
+	public void setGLocationListener( GLocationListener listener ) {
+		this.l = listener;
+	}
 		
 	/**
 	 * Class contains a listener which is called periodically to
@@ -68,7 +72,9 @@ public class GeoLocation {
 		public void onLocationChanged(Location location) {
 			double lat = location.getLatitude();
 			double lon = location.getLongitude();
-			GeoLocation.this.l.locationSet(lat, lon);
+			if (GeoLocation.this.l != null) {
+				GeoLocation.this.l.locationSet(lat, lon);
+			}
 		}
 
 		

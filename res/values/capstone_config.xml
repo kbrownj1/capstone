@@ -3,7 +3,7 @@
     	
         <string name="xmpp_server_url">123@conference.openfireserver.hopto.org</string>
         <!-- <string name="xmpp_server_url">123@conference.xmppserver.zapto.org</string> -->
-        <string name="map_key">0E_uVdU6fHEzP5IqrXX_LinSn9sTnJTFrfXoLwQ</string>
+        <string name="map_key">0y9rQukf3K5jvmAlDKTqFyGTK4MZmQB423r_u4g</string>
         <string name="ping_period_seconds">30</string>
         <string name="emergency_timeout_periods">2</string> <!-- number of ping_period_seconds to a timeout -->
 </resources>

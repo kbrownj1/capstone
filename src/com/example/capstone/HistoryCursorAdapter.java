@@ -121,10 +121,13 @@ public class HistoryCursorAdapter extends CursorAdapter {
         String message = cursor.getString(cursor.getColumnIndex("msg"));
         TextView msg = (TextView) view.findViewById(R.id.chat_message_Msg);
         msg.setText(message);
-        if (context.getString(R.string.emergency_message).equals(message)) {
+        
+        // change the emergency message to red color
+        if (context.getString(R.string.emergency_message).equals(message)){
         	msg.setTextColor(Color.RED);
-        } else {
+        }else {
         	msg.setTextColor(Color.BLACK);
+        	
         }
         long timestamp = cursor.getLong(cursor.getColumnIndex("ts"));
         Date d = new Date(timestamp);

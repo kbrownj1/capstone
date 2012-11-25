@@ -80,7 +80,6 @@ public class GroupMemberAdapter extends BaseAdapter{
 	     Log.d("MMMC", GroupMemberAdapter.class.getSimpleName() + " " + member.toString());
 	     	
 	     holder.name.setText(member.getName());
-
 	     holder.latitude.setText("Lat: " + member.getLat());
 	     holder.longitude.setText("Long: " + member.getLong());
 	     

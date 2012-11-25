@@ -37,6 +37,8 @@
 
 package com.example.capstone;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -47,7 +49,10 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.Uri.Builder;
@@ -62,6 +67,8 @@ import android.widget.TextView;
 
 import com.googlecode.asmack.Attribute;
 import com.googlecode.asmack.Stanza;
+
+import edu.sumb.mygooglemap.MyGoogleMapActivity;
 
 /**
  * Main chat activity.
@@ -94,6 +101,8 @@ public class Chat extends Activity implements OnClickListener {
      * Full local user jid, if available.
      */
     public String fullJid;
+    
+    public boolean isDestroyed ;
     
 
     /**
@@ -168,7 +177,7 @@ public class Chat extends Activity implements OnClickListener {
         //start chat room initialization.  Send a presence stanza to the room when you open it.
         
        
-        //sendLocation();
+        sendLocation();
 		
 		
         //start roster get.  Send a IQ stanza to the room when you open it.
@@ -245,6 +254,11 @@ public class Chat extends Activity implements OnClickListener {
 
     }
 
+    @Override
+    public void onDestroy() {
+    	this.isDestroyed = true;
+    	super.onDestroy();
+    }
     /**
      * Clicked on button click, creating a new xmpp stanza and sending it
      * to the remote jid.
@@ -279,104 +293,135 @@ public class Chat extends Activity implements OnClickListener {
     /**
      * This sends location information to the XMPP server.
      */
-//    private void sendLocation() {
-//    	this.geo = new GeoLocation(this, new GeoLocation.GLocationListener() {
-//    		
-//    		/*
-//    		 * (non-Javadoc)
-//    		 * @see com.example.capstone.GeoLocation.GLocationListener#locationSet(double, double)
-//    		 */
-//			@Override
-//			public void locationSet(double lat, double lon) {
-//				
-//				// Send lat/lon in an iq stanza to server
-//				
-//				Chat.this.mLat = Double.valueOf(lat);
-//				Chat.this.mLon = Double.valueOf(lon);
-//				
-//				if (xmlPullParserFactory == null) {
-//					return;
-//				}
-//				
-//		        StringWriter xml3 = new StringWriter();
-//		        try {
-//		            XmlSerializer serializer = xmlPullParserFactory.newSerializer();
-//		            serializer.setOutput(xml3);
+    private void sendLocation() {
+    	
+    	// Put dialog up to indicate it may take some time to 
+    	// obtain geo coordinates.
+		AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+		builder.setMessage(R.string.wait_for_geo);
+		builder.setCancelable(false);
+		
+		final AlertDialog dialog = builder.create();
+		dialog.show();
+
+    	
+    	
+    	this.geo = new GeoLocation(this, new GeoLocation.GLocationListener() {
+    		
+    		/*
+    		 * (non-Javadoc)
+    		 * @see com.example.capstone.GeoLocation.GLocationListener#locationSet(double, double)
+    		 */
+			@Override
+			public void locationSet(double lat, double lon) {
+				
+				// Send lat/lon in an iq stanza to server
+				
+				Chat.this.mLat = Double.valueOf(lat);
+				Chat.this.mLon = Double.valueOf(lon);
+				
+				// don't bother dismissing if the activity is already destroyed, as
+				// doing so will throw an exception.
+				if (!isDestroyed) {
+					dialog.dismiss();
+				}
+
+//				Chat.this.runOnUiThread(new Runnable() {
 //
-//		            String iqString = "iq";
-//		            serializer.startTag(null, iqString);
-//		            serializer.attribute(null, "type", "set");
-//		            serializer.attribute(null, "from", Chat.this.getResources().getString(R.string.default_user));
-//		            serializer.attribute(null, "id", ID + "-" + Integer.toHexString(atomicInt.incrementAndGet()));
-//		            
-//		            serializer.startTag(null, "pubsub");
-//		            serializer.attribute(null, "xmlns", "http://jabber.org/protocol/pubsub");
-//		            
-//		            serializer.startTag(null, "publish");
-//		            serializer.attribute(null, "node", "http://jabber.org/protocol/geoloc");
-//		            
-//		            serializer.startTag(null, "item");
-//		            
-//		            serializer.startTag(null, "geoloc");
-//		            serializer.attribute(null, "xmlns", "http://jabber.org/protocol/geoloc");
-//		            serializer.attribute(null, "xml:lang", "en");
-//		            
-//		            serializer.startTag(null, "lat");
-//		            serializer.text(""+lat);
-//		            serializer.endTag(null, "lat");
-//		            
-//		            serializer.startTag(null, "lon");
-//		            serializer.text(""+lon);
-//		            serializer.endTag(null, "lon");
-//		            
-//		            serializer.endTag(null, "geoloc");
-//		            
-//		            serializer.endTag(null, "item");
-//		            
-//		            serializer.endTag(null, "publish");
-//		            
-//		            serializer.endTag(null, "pubsub");
-//		            
-//		            serializer.endTag(null, "iq");
-//		            
-//		            serializer.flush();
-//		        } catch (XmlPullParserException e) {
-//		            e.printStackTrace();
-//		        } catch (IllegalArgumentException e) {
-//		            e.printStackTrace();
-//		        } catch (IllegalStateException e) {
-//		            e.printStackTrace();
-//		        } catch (IOException e) {
-//		            e.printStackTrace();
-//		        }
-//
-//		        
-//		        
-//		        Stanza stanza3 =
-//		            new Stanza("iq", null, Chat.this.from, xml3.toString(), null);
-//		        
-//		        Log.i("Chat", "Send Location, xml=" + xml3.toString() + "");
-//		        Intent intent3 = new Intent();
-//		        intent3.setAction("com.googlecode.asmack.intent.XMPP.STANZA.SEND");
-//		        intent3.putExtra("stanza", stanza3);
-//		        intent3.addFlags(Intent.FLAG_FROM_BACKGROUND);
-//		        getApplicationContext().sendBroadcast(intent3, "com.googlecode.asmack.intent.XMPP.STANZA.SEND");
-//				
-//			}
-//		});
-//    	
-//
-//    }
+//					@Override
+//					public void run() {
+//						// TODO Auto-generated method stub
+//						dialog.dismiss();
+//					}
+//					
+//				});
+				
+				// Disable the getLocation once gps coordinates are obtained.
+				Chat.this.geo.setGLocationListener(null);
+				
+				if (xmlPullParserFactory == null) {
+					return;
+				}
+				
+		        StringWriter xml3 = new StringWriter();
+		        try {
+		            XmlSerializer serializer = xmlPullParserFactory.newSerializer();
+		            serializer.setOutput(xml3);
+
+		            String iqString = "iq";
+		            serializer.startTag(null, iqString);
+		            serializer.attribute(null, "type", "set");
+		            serializer.attribute(null, "from", Chat.this.from);
+		            serializer.attribute(null, "id", ID + "-" + Integer.toHexString(atomicInt.incrementAndGet()));
+		            
+		            serializer.startTag(null, "pubsub");
+		            serializer.attribute(null, "xmlns", "http://jabber.org/protocol/pubsub");
+		            
+		            serializer.startTag(null, "publish");
+		            serializer.attribute(null, "node", "http://jabber.org/protocol/geoloc");
+		            
+		            serializer.startTag(null, "item");
+		            
+		            serializer.startTag(null, "geoloc");
+		            serializer.attribute(null, "xmlns", "http://jabber.org/protocol/geoloc");
+		            serializer.attribute(null, "xml:lang", "en");
+		            
+		            serializer.startTag(null, "lat");
+		            serializer.text(""+lat);
+		            serializer.endTag(null, "lat");
+		            
+		            serializer.startTag(null, "lon");
+		            serializer.text(""+lon);
+		            serializer.endTag(null, "lon");
+		            
+		            serializer.endTag(null, "geoloc");
+		            
+		            serializer.endTag(null, "item");
+		            
+		            serializer.endTag(null, "publish");
+		            
+		            serializer.endTag(null, "pubsub");
+		            
+		            serializer.endTag(null, "iq");
+		            
+		            serializer.flush();
+		        } catch (XmlPullParserException e) {
+		            e.printStackTrace();
+		        } catch (IllegalArgumentException e) {
+		            e.printStackTrace();
+		        } catch (IllegalStateException e) {
+		            e.printStackTrace();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+
+		        
+		        
+		        Stanza stanza3 =
+		            new Stanza("iq", null, Chat.this.from, xml3.toString(), null);
+		        
+		        Log.i("Chat", "Send Location, xml=" + xml3.toString() + "");
+		        Intent intent3 = new Intent();
+		        intent3.setAction("com.googlecode.asmack.intent.XMPP.STANZA.SEND");
+		        intent3.putExtra("stanza", stanza3);
+		        intent3.addFlags(Intent.FLAG_FROM_BACKGROUND);
+		        getApplicationContext().sendBroadcast(intent3, "com.googlecode.asmack.intent.XMPP.STANZA.SEND");
+				
+			}
+		});
+    	
+
+    }
     
     /**
      * Send a message to server
      * 
-     * @param context		Must be the Activity context.
+     * @param context
      * @param to
      * @param from
      * @param message
      */
-    public static void sendMessage(Activity context, String msg, String to, String from ) {
+    public static void sendMessage(Context context, String msg, String to, String from ) {
     	if (xmlPullParserFactory == null) {
     		return;
     	}
@@ -387,6 +432,7 @@ public class Chat extends Activity implements OnClickListener {
 		// check if GPS enabled		
         if(!gps.canGetLocation())
         {
+        	Log.w("Chat", "sendMessage, cannot obtain GPS location");
         	return;
         }
         	
