@@ -52,7 +52,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     /**
      * Current major database version.
      */
-    private final static short MAJOR = 7;
+    private final static short MAJOR = 8;
 
     /**
      * Current minor database version.
@@ -96,11 +96,11 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         
         db.execSQL(
                 "CREATE TABLE user_info(" +
-                    "_id INTEGER," +
-                    "name TEXT," +
-                    "lat REAL," +
-                    "long REAL," +
-                    "in_trouble INTEGER," +
+                    "_id           INTEGER," +
+                    "name          TEXT,"    +
+                    "lat           REAL,"    +
+                    "long          REAL,"    +
+                    "in_trouble    INTEGER," +
                     "PRIMARY KEY(_id)" +
                 ")"
             );

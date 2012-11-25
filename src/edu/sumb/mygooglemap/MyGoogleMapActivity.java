@@ -1,5 +1,6 @@
 package edu.sumb.mygooglemap;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -111,6 +112,10 @@ public class MyGoogleMapActivity extends MapActivity {
 					public void onClick(DialogInterface dialog, int which) {
 						// If user tapped YES, send an EMERGENCY MESSAGE
 						
+						if (which != BUTTON_POSITIVE) {
+							return;
+						}
+						
 						// create class object
 				        GPSTracker gps = new GPSTracker(MyGoogleMapActivity.this);
 
@@ -121,10 +126,9 @@ public class MyGoogleMapActivity extends MapActivity {
 				        	Double latitude = Double.valueOf(gps.getLatitude());
 				        	Double longitude = Double.valueOf(gps.getLongitude());
 				        	
-				        	String emergencyString = MyGoogleMapActivity.this.getResources().getString(R.string.emergency_string);
-							Chat.sendMessage(MyGoogleMapActivity.this.getApplicationContext(), emergencyString, MyGoogleMapActivity.this.to, MyGoogleMapActivity.this.from, latitude, longitude);
-							// TODO Auto-generated method stub
-							
+				        	String emergencyString = MyGoogleMapActivity.this.getString(R.string.emergency_message);
+							Chat.sendMessage(MyGoogleMapActivity.this, emergencyString, MyGoogleMapActivity.this.to, MyGoogleMapActivity.this.from);
+
 				        }
 				        else
 				        {

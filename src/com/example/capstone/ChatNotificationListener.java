@@ -114,7 +114,8 @@ public class ChatNotificationListener implements PacketListener {
     		//  If a MUC available presence packet comes in, add/update database
     		if( isMUC == true && presence.getType().toString().equals("available") && isGEO == true ) {
     			
-    				updateDatabase(presenceFrom, inLat, inLong);
+    				Log.d("CNL", "updating DB from presence, from=" + presenceFrom + ", lat=" + inLat + ", lon=" + inLong );
+    				updateDatabase(presenceFrom, inLat, inLong, null);
     			}
     	
     		// if a MUC Unavailable presence packet comes in, remove user from database
@@ -144,10 +145,11 @@ public class ChatNotificationListener implements PacketListener {
     		// Extract lat and lon from message
     		double inLat = getLat(msg);
     		double inLon = getLon(msg);
+    		boolean isEmergency = text.startsWith(this.context.getString(R.string.emergency_message));
     		
-    		Log.i("CNL", "recovered name=[" + messageFrom + "], lat/lon=" + inLat + "," + inLon);
+    		Log.i("CNL", "recovered name=[" + messageFrom + "], lat/lon=" + inLat + "," + inLon + ", isEmergency=" + isEmergency);
     		
-    		updateDatabase(messageFrom, inLat, inLon);
+    		updateDatabase(messageFrom, inLat, inLon, Boolean.valueOf(isEmergency));
     		
     		String bareFrom = XMPPUtils.getBareJid(msg.getFrom());
     		String msgFrom = StringUtils.parseResource(msg.getFrom());
@@ -210,6 +212,8 @@ public class ChatNotificationListener implements PacketListener {
         	   	}	
         			
        			//Log.d("CNL", "ERIK: MUC EXTENSION FOUND");
+        	   	
+        	   	// Insert new message into database
                	ContentValues values = new ContentValues();
               	values.put("ts", System.currentTimeMillis());
                	values.put("jid", bareFrom);
@@ -297,15 +301,25 @@ public class ChatNotificationListener implements PacketListener {
     
     /**
      * Insert new record or update the database 
-     * @param name
-     * @param lat
-     * @param lon
+     * @param name			name of remote user (from)
+     * @param lat			latitude of remote user
+     * @param lon			longitude of remote user
+     * @param isEmergency 	If not null, indicates whether user pressed EMERGENCY
+     * 						If null, the state of EMERGENCY is not known, and so it
+     * 						will not be changed.
      */
-    private void updateDatabase(String name, double lat, double lon) {
+    private void updateDatabase(String name, double lat, double lon, Boolean isEmergency) {
 		ContentValues values = new ContentValues();
 		values.put("name", name);
 		values.put("lat", lat);
 		values.put("long", lon);
+		if (isEmergency != null) {
+			values.put("in_trouble", isEmergency.booleanValue() ? 1 : 0);
+//			if (isEmergency.booleanValue()) {
+//				// record time of last positive emergency notice.
+//				values.put("in_trouble_ts", System.currentTimeMillis());
+//			}
+		}
 		
 		if (this.database.update("user_info", values, "name='" + name + "'", null) < 1 ) {
 			this.database.insert("user_info", "_id", values);

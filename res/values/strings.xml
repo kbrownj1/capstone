@@ -10,6 +10,7 @@
     <string name="emergency">EMERGENCY</string>
     <string name="emergency_msg">Do you want to send EMERGENCY status to everyone?</string>
     <string name="emergency_yes">YES, DO IT NOW!</string>
-    <string name="emergency_no">NO</string>
-    <string name="emergency_string">EMERGENCY</string>
+    <string name="emergency_no">No</string>
+    <string name="emergency_message">EMERGENCY</string>
+    <string name="ping_message">PING</string>
 </resources>

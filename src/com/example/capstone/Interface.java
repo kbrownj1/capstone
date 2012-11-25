@@ -27,7 +27,7 @@ import com.googlecode.asmack.connection.IXmppTransportService;
 
 import edu.sumb.mygooglemap.MyGoogleMapActivity;
 
-public class Interface extends TabActivity {
+public class Interface extends TabActivity implements Runnable {
 	/**
      * Logging tag, ChatActivity.
      */
@@ -197,13 +197,16 @@ public class Interface extends TabActivity {
         tabHost.addTab(spec);
         
         //GPS Tab 
-        intent = new Intent().setClass(this, GPSTrackingActivity.class);
-        spec = tabHost.newTabSpec("gps").setIndicator("GPS", res.getDrawable(R.drawable.gps_icon)).setContent(intent);
-        tabHost.addTab(spec);
+//        intent = new Intent().setClass(this, GPSTrackingActivity.class);
+//        spec = tabHost.newTabSpec("gps").setIndicator("GPS", res.getDrawable(R.drawable.gps_icon)).setContent(intent);
+//        tabHost.addTab(spec);
 
         tabHost.setCurrentTab(1);
         
         this.notificationManager.cancel(toFrom, 1);
+        
+        // Start thread to ping server with message periodically as alternative to presence.
+        new Thread(this, "pingThread").start();
 
     }
     
@@ -221,4 +224,34 @@ public class Interface extends TabActivity {
         this.startService(transportService);
         Log.i("Interface", "Started IChatservice");
     }
+
+    /*
+     * This is run in its own thread and "pings" the server with a presence message 
+     * at a fixed interval.
+     * It also examines the database and updates any row with in_trouble set beyond a
+     * given number of seconds since the emergency was issued.
+     * 
+     * (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
+	@Override
+	public void run() {
+		String pingPeriodSeconds = this.getString(R.string.ping_period_seconds);
+		long time = Long.valueOf(pingPeriodSeconds).longValue() * 1000;
+
+		String msg = this.getString(R.string.ping_message);
+		
+		while (true) {
+
+			//Chat.sendMessage(this, msg, this.to, this.from);
+	        
+			try {
+				Thread.sleep(time);
+			} catch (InterruptedException e) {
+				// Assume interruption means end of app.
+				return;
+			}
+			
+		}
+	}
 }	

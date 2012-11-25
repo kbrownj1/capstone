@@ -1,18 +1,17 @@
 package com.example.capstone;
 
+import static com.example.capstone.Constants.SAN_JOSE_LAT;
+import static com.example.capstone.Constants.SAN_JOSE_LON;
+
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
-
-import static com.example.capstone.Constants.SAN_JOSE_LAT;
-import static com.example.capstone.Constants.SAN_JOSE_LON;
 
 public class Group extends Activity{
 	
@@ -55,10 +54,12 @@ public class Group extends Activity{
 		
 		if (this.resultsCursor.moveToFirst()){
 			do{
-				String name = this.resultsCursor.getString(0);
-				Double lat = this.resultsCursor.getDouble(1);
-				Double lng = this.resultsCursor.getDouble(2);
+				String name         = this.resultsCursor.getString(0);
+				Double lat          = this.resultsCursor.getDouble(1);
+				Double lng          = this.resultsCursor.getDouble(2);
 				boolean isEmergency = this.resultsCursor.getInt(3) != 0;
+//				long emergencyTime  = this.resultsCursor.getInt(4);
+				
 				Log.i(TAG, className + " adding " + name + " to group at location " + lat + " " + lng + ", emergency=" + isEmergency);
 				this.members.add(new GroupMember(name, lat, lng, isEmergency));
 				

@@ -48,7 +48,6 @@ import org.xmlpull.v1.XmlSerializer;
 
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.Uri.Builder;
@@ -169,7 +168,7 @@ public class Chat extends Activity implements OnClickListener {
         //start chat room initialization.  Send a presence stanza to the room when you open it.
         
        
-        sendLocation();
+        //sendLocation();
 		
 		
         //start roster get.  Send a IQ stanza to the room when you open it.
@@ -178,9 +177,8 @@ public class Chat extends Activity implements OnClickListener {
         ArrayList<Attribute> attributes3 = new ArrayList<Attribute>();
         attributes3.add(new Attribute("type", "", "get"));
 //        attributes3.add(new Attribute("to", "", "lowney-emulator@jabber.ferrobyte.com"));
-//        attributes3.add(new Attribute("to", "", this.getResources().getString(R.string.xmpp_server_url)));
-        attributes3.add(new Attribute("from", "", this.getResources().getString(R.string.default_user)));
-        // TODO remove hard coded "from" name
+        attributes3.add(new Attribute("to", "", this.getResources().getString(R.string.xmpp_server_url)));
+        attributes3.add(new Attribute("from", "", this.from));
         
         attributes3.add(new Attribute(
                 "id",
@@ -269,90 +267,7 @@ public class Chat extends Activity implements OnClickListener {
         // Get message from the text field and create a message to send to Asmack service
         //
         String msg = this.input.getEditableText().toString();
-        sendMessage(this.getApplicationContext(), msg, this.to, this.from, this.mLat, this.mLon);
-//        StringWriter xml = new StringWriter();
-//        try {
-//            XmlSerializer serializer = xmlPullParserFactory.newSerializer();
-//            serializer.setOutput(xml);
-//            serializer.startTag(null, "message");
-//            serializer.startTag("http://jabber.org/protocol/muc#user", "x");
-//            serializer.endTag("http://jabber.org/protocol/muc#user", "x");
-//            serializer.startTag(null, "body");
-//            serializer.text(msg);
-//            serializer.endTag(null, "body");
-//            
-//            if (this.mLon != null) {
-//            	serializer.startTag(null, "location");
-//            
-//            	serializer.startTag(null, "lat");
-//            	serializer.text("" + this.mLat.doubleValue());
-//            	serializer.endTag(null, "lat");
-//            	
-//            	serializer.startTag(null, "lon");
-//            	serializer.text("" + this.mLon.doubleValue());
-//            	serializer.endTag(null, "lon");
-//            	
-//            	serializer.endTag(null, "location");
-//            }
-//           
-//            serializer.endTag(null, "message");
-//            serializer.flush();
-//        } catch (XmlPullParserException e) {
-//            e.printStackTrace();
-//        } catch (IllegalArgumentException e) {
-//            e.printStackTrace();
-//        } catch (IllegalStateException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        ArrayList<Attribute> attributes = new ArrayList<Attribute>();
-//        attributes.add(new Attribute("type", "", "groupchat"));
-//        attributes.add(new Attribute("to", "", this.to));
-//        attributes.add(new Attribute(
-//                "id",
-//                "",
-//                ID + "-" + Integer.toHexString(atomicInt.incrementAndGet()))
-//        );        
-//        
-//        Stanza stanza =
-//            new Stanza("message", "", this.from, xml.toString(), attributes);
-//        
-//        Log.i("Chat", "about send message=" + xml.toString());
-//        //
-//        // Code to send message to Asmack service via intent broadcast
-//        //
-//        Intent intent = new Intent();
-//        intent.setAction("com.googlecode.asmack.intent.XMPP.STANZA.SEND");
-//        intent.putExtra("stanza", stanza);
-//        intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
-//        getApplicationContext().sendBroadcast(intent, "com.googlecode.asmack.intent.XMPP.STANZA.SEND");
-//
-//        //
-//        // Save key values in database
-//        //
-//        ContentValues values = new ContentValues();
-//        values.put("ts", System.currentTimeMillis());
-//        values.put("via", this.from);
-//        values.put("jid", this.to);
-//        values.put("dst", this.to);
-//        values.put("src", this.from);
-//        values.put("msg", msg);
-//        Database.getDatabase(null, null).insert("msg", "_id", values);
-//        
-//        //
-//        // ?? Notifies cursor adapter object of change 
-//        //
-//        Builder builder = new Uri.Builder();
-//        builder.scheme("content");
-//        builder.authority("jabber-chat-db");
-//        builder.appendPath(this.from);
-//        builder.appendPath(this.to);
-//        Uri uri = builder.build();
-//        Log.d("Chat", "Uri=" + uri.toString());
-//        getApplicationContext()
-//            .getContentResolver()
-//            .notifyChange(builder.build(), null);
+        sendMessage(this, msg, this.to, this.from);
         
         //
         // Clear out text for the next message
@@ -364,109 +279,120 @@ public class Chat extends Activity implements OnClickListener {
     /**
      * This sends location information to the XMPP server.
      */
-    private void sendLocation() {
-    	this.geo = new GeoLocation(this, new GeoLocation.GLocationListener() {
-    		
-    		/*
-    		 * (non-Javadoc)
-    		 * @see com.example.capstone.GeoLocation.GLocationListener#locationSet(double, double)
-    		 */
-			@Override
-			public void locationSet(double lat, double lon) {
-				
-				// Send lat/lon in an iq stanza to server
-				
-				Chat.this.mLat = Double.valueOf(lat);
-				Chat.this.mLon = Double.valueOf(lon);
-				
-				if (xmlPullParserFactory == null) {
-					return;
-				}
-				
-		        StringWriter xml3 = new StringWriter();
-		        try {
-		            XmlSerializer serializer = xmlPullParserFactory.newSerializer();
-		            serializer.setOutput(xml3);
-
-		            String iqString = "iq";
-		            serializer.startTag(null, iqString);
-		            serializer.attribute(null, "type", "set");
-		            serializer.attribute(null, "from", Chat.this.getResources().getString(R.string.default_user));
-		            serializer.attribute(null, "id", ID + "-" + Integer.toHexString(atomicInt.incrementAndGet()));
-		            
-		            serializer.startTag(null, "pubsub");
-		            serializer.attribute(null, "xmlns", "http://jabber.org/protocol/pubsub");
-		            
-		            serializer.startTag(null, "publish");
-		            serializer.attribute(null, "node", "http://jabber.org/protocol/geoloc");
-		            
-		            serializer.startTag(null, "item");
-		            
-		            serializer.startTag(null, "geoloc");
-		            serializer.attribute(null, "xmlns", "http://jabber.org/protocol/geoloc");
-		            serializer.attribute(null, "xml:lang", "en");
-		            
-		            serializer.startTag(null, "lat");
-		            serializer.text(""+lat);
-		            serializer.endTag(null, "lat");
-		            
-		            serializer.startTag(null, "lon");
-		            serializer.text(""+lon);
-		            serializer.endTag(null, "lon");
-		            
-		            serializer.endTag(null, "geoloc");
-		            
-		            serializer.endTag(null, "item");
-		            
-		            serializer.endTag(null, "publish");
-		            
-		            serializer.endTag(null, "pubsub");
-		            
-		            serializer.endTag(null, "iq");
-		            
-		            serializer.flush();
-		        } catch (XmlPullParserException e) {
-		            e.printStackTrace();
-		        } catch (IllegalArgumentException e) {
-		            e.printStackTrace();
-		        } catch (IllegalStateException e) {
-		            e.printStackTrace();
-		        } catch (IOException e) {
-		            e.printStackTrace();
-		        }
-
-		        
-		        
-		        Stanza stanza3 =
-		            new Stanza("iq", null, Chat.this.from, xml3.toString(), null);
-		        
-		        Log.i("Chat", "Send Location, xml=" + xml3.toString() + "");
-		        Intent intent3 = new Intent();
-		        intent3.setAction("com.googlecode.asmack.intent.XMPP.STANZA.SEND");
-		        intent3.putExtra("stanza", stanza3);
-		        intent3.addFlags(Intent.FLAG_FROM_BACKGROUND);
-		        getApplicationContext().sendBroadcast(intent3, "com.googlecode.asmack.intent.XMPP.STANZA.SEND");
-				
-			}
-		});
-    	
-
-    }
+//    private void sendLocation() {
+//    	this.geo = new GeoLocation(this, new GeoLocation.GLocationListener() {
+//    		
+//    		/*
+//    		 * (non-Javadoc)
+//    		 * @see com.example.capstone.GeoLocation.GLocationListener#locationSet(double, double)
+//    		 */
+//			@Override
+//			public void locationSet(double lat, double lon) {
+//				
+//				// Send lat/lon in an iq stanza to server
+//				
+//				Chat.this.mLat = Double.valueOf(lat);
+//				Chat.this.mLon = Double.valueOf(lon);
+//				
+//				if (xmlPullParserFactory == null) {
+//					return;
+//				}
+//				
+//		        StringWriter xml3 = new StringWriter();
+//		        try {
+//		            XmlSerializer serializer = xmlPullParserFactory.newSerializer();
+//		            serializer.setOutput(xml3);
+//
+//		            String iqString = "iq";
+//		            serializer.startTag(null, iqString);
+//		            serializer.attribute(null, "type", "set");
+//		            serializer.attribute(null, "from", Chat.this.getResources().getString(R.string.default_user));
+//		            serializer.attribute(null, "id", ID + "-" + Integer.toHexString(atomicInt.incrementAndGet()));
+//		            
+//		            serializer.startTag(null, "pubsub");
+//		            serializer.attribute(null, "xmlns", "http://jabber.org/protocol/pubsub");
+//		            
+//		            serializer.startTag(null, "publish");
+//		            serializer.attribute(null, "node", "http://jabber.org/protocol/geoloc");
+//		            
+//		            serializer.startTag(null, "item");
+//		            
+//		            serializer.startTag(null, "geoloc");
+//		            serializer.attribute(null, "xmlns", "http://jabber.org/protocol/geoloc");
+//		            serializer.attribute(null, "xml:lang", "en");
+//		            
+//		            serializer.startTag(null, "lat");
+//		            serializer.text(""+lat);
+//		            serializer.endTag(null, "lat");
+//		            
+//		            serializer.startTag(null, "lon");
+//		            serializer.text(""+lon);
+//		            serializer.endTag(null, "lon");
+//		            
+//		            serializer.endTag(null, "geoloc");
+//		            
+//		            serializer.endTag(null, "item");
+//		            
+//		            serializer.endTag(null, "publish");
+//		            
+//		            serializer.endTag(null, "pubsub");
+//		            
+//		            serializer.endTag(null, "iq");
+//		            
+//		            serializer.flush();
+//		        } catch (XmlPullParserException e) {
+//		            e.printStackTrace();
+//		        } catch (IllegalArgumentException e) {
+//		            e.printStackTrace();
+//		        } catch (IllegalStateException e) {
+//		            e.printStackTrace();
+//		        } catch (IOException e) {
+//		            e.printStackTrace();
+//		        }
+//
+//		        
+//		        
+//		        Stanza stanza3 =
+//		            new Stanza("iq", null, Chat.this.from, xml3.toString(), null);
+//		        
+//		        Log.i("Chat", "Send Location, xml=" + xml3.toString() + "");
+//		        Intent intent3 = new Intent();
+//		        intent3.setAction("com.googlecode.asmack.intent.XMPP.STANZA.SEND");
+//		        intent3.putExtra("stanza", stanza3);
+//		        intent3.addFlags(Intent.FLAG_FROM_BACKGROUND);
+//		        getApplicationContext().sendBroadcast(intent3, "com.googlecode.asmack.intent.XMPP.STANZA.SEND");
+//				
+//			}
+//		});
+//    	
+//
+//    }
     
     /**
      * Send a message to server
      * 
-     * @param context
-     * @param message
+     * @param context		Must be the Activity context.
      * @param to
      * @param from
-     * @param lat
-     * @param lon
+     * @param message
      */
-    public static void sendMessage(Context context, String msg, String to, String from, Double lat, Double lon ) {
+    public static void sendMessage(Activity context, String msg, String to, String from ) {
     	if (xmlPullParserFactory == null) {
     		return;
     	}
+
+		// create class object
+        GPSTracker gps = new GPSTracker(context);
+
+		// check if GPS enabled		
+        if(!gps.canGetLocation())
+        {
+        	return;
+        }
+        	
+    	double latitude  = gps.getLatitude();
+    	double longitude = gps.getLongitude();
+        	
     	
     	StringWriter xml = new StringWriter();
         try {
@@ -477,21 +403,20 @@ public class Chat extends Activity implements OnClickListener {
             serializer.endTag("http://jabber.org/protocol/muc#user", "x");
             serializer.startTag(null, "body");
             serializer.text(msg);
+            
             serializer.endTag(null, "body");
+
+            serializer.startTag(null, "location");
             
-            if (lon != null) {
-            	serializer.startTag(null, "location");
-            
-            	serializer.startTag(null, "lat");
-            	serializer.text("" + lat.doubleValue());
-            	serializer.endTag(null, "lat");
-            	
-            	serializer.startTag(null, "lon");
-            	serializer.text("" + lon.doubleValue());
-            	serializer.endTag(null, "lon");
-            	
-            	serializer.endTag(null, "location");
-            }
+        	serializer.startTag(null, "lat");
+        	serializer.text("" + latitude);
+        	serializer.endTag(null, "lat");
+        	
+        	serializer.startTag(null, "lon");
+        	serializer.text("" + longitude);
+        	serializer.endTag(null, "lon");
+        	
+        	serializer.endTag(null, "location");
            
             serializer.endTag(null, "message");
             serializer.flush();
@@ -524,7 +449,7 @@ public class Chat extends Activity implements OnClickListener {
         intent.setAction("com.googlecode.asmack.intent.XMPP.STANZA.SEND");
         intent.putExtra("stanza", stanza);
         intent.addFlags(Intent.FLAG_FROM_BACKGROUND);
-        context.sendBroadcast(intent, "com.googlecode.asmack.intent.XMPP.STANZA.SEND");
+        context.getApplicationContext().sendBroadcast(intent, "com.googlecode.asmack.intent.XMPP.STANZA.SEND");
 
         //
         // Save key values in database
@@ -548,9 +473,7 @@ public class Chat extends Activity implements OnClickListener {
         builder.appendPath(to);
         Uri uri = builder.build();
         Log.d("Chat", "Uri=" + uri.toString());
-        context
-            .getContentResolver()
-            .notifyChange(builder.build(), null);
+        context.getContentResolver().notifyChange(builder.build(), null);
         
  
     }
