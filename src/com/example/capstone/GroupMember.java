@@ -1,5 +1,7 @@
 package com.example.capstone;
 
+import java.util.Locale;
+
 public class GroupMember {
 	
 	private String name;
@@ -43,7 +45,9 @@ public class GroupMember {
 	
 	@Override
 	public String toString(){
-		return this.name + " " + "lat:" + this.location[0] + " lon:" + this.location[1] + ", " + (this.isEmergency ? Constants.EMERGENCY : "");
+		String latString = String.format(Locale.US, "%.4f", this.location[0]);
+		String lonString = String.format(Locale.US, "%.4f", this.location[1]);
+		return this.name + " " + "lat:" + latString + " lon:" + lonString + ", " + (this.isEmergency ? Constants.EMERGENCY : "");
 	}	
 	
 }

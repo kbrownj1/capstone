@@ -1,9 +1,6 @@
 package edu.sumb.mygooglemap;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
-
-import java.net.URLEncoder;
-
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -15,7 +12,6 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +21,6 @@ import android.widget.Button;
 import com.example.capstone.Chat;
 import com.example.capstone.Constants;
 import com.example.capstone.Database;
-import com.example.capstone.GPSTracker;
 import com.example.capstone.R;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -50,7 +45,7 @@ public class MyGoogleMapActivity extends MapActivity {
 	MapController mapController;
 	MapView mapView;
 	private LocationManager locationManager;
-	private MyOverlays itemizedoverlay;
+	MyOverlays itemizedoverlay;
 	MyLocationOverlay myLocationOverlay;
 	private Button emergencyButton;
 	
@@ -69,8 +64,8 @@ public class MyGoogleMapActivity extends MapActivity {
 		
 		Intent intent = getIntent();
 		this.toFrom = intent.getData().getPathSegments().get(0);
-		Log.i(TAG, "message to/from: " + toFrom);
-		String splitToFrom[] = toFrom.split("/");
+		Log.i(TAG, "message to/from: " + this.toFrom);
+		String splitToFrom[] = this.toFrom.split("/");
 		this.to = splitToFrom[0];
 		this.from = splitToFrom[1];
 		
@@ -213,20 +208,20 @@ public class MyGoogleMapActivity extends MapActivity {
 	void createMarker() {
 		// Start with fresh overlay, since this method adds all points on the map.
 		this.itemizedoverlay.clearOverlays();
-
+/*		
 		GeoPoint p = this.mapView.getMapCenter();
 		
-		/*itemizedoverlay.clearOverlays();
-		itemizedoverlay.addOverlay(new OverlayItem(new GeoPoint(p.getLatitudeE6()-10000, p.getLongitudeE6()-10000), "", ""));
-		itemizedoverlay.addOverlay(new OverlayItem(new GeoPoint(p.getLatitudeE6()-10000, p.getLongitudeE6()+10000), "", ""));
-		itemizedoverlay.addOverlay(new OverlayItem(new GeoPoint(p.getLatitudeE6()+10000, p.getLongitudeE6()+10000), "", ""));
-		itemizedoverlay.addOverlay(new OverlayItem(new GeoPoint(p.getLatitudeE6()+10000, p.getLongitudeE6()-10000), "", ""));
-		if (itemizedoverlay.size() > 0) {
-			mapView.getOverlays().add(itemizedoverlay);
+		this.itemizedoverlay.clearOverlays();
+		this.itemizedoverlay.addOverlay(new OverlayItem(new GeoPoint(p.getLatitudeE6()-10000, p.getLongitudeE6()-10000), "", ""));
+		this.itemizedoverlay.addOverlay(new OverlayItem(new GeoPoint(p.getLatitudeE6()-10000, p.getLongitudeE6()+10000), "", ""));
+		this.itemizedoverlay.addOverlay(new OverlayItem(new GeoPoint(p.getLatitudeE6()+10000, p.getLongitudeE6()+10000), "", ""));
+		this.itemizedoverlay.addOverlay(new OverlayItem(new GeoPoint(p.getLatitudeE6()+10000, p.getLongitudeE6()-10000), "", ""));
+		if (this.itemizedoverlay.size() > 0) {
+			this.mapView.getOverlays().add(this.itemizedoverlay);
 		}
-		*/
+		OverlayItem overlayitem = new OverlayItem(p, "Me", "");
 		
-		//OverlayItem overlayitem = new OverlayItem(p, "Me", "");
+*/		
 		addOtherUsersToMap();
 		
 		//this.itemizedoverlay.addOverlay(overlayitem);

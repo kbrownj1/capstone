@@ -37,8 +37,6 @@
 
 package com.example.capstone;
 
-import static android.content.DialogInterface.BUTTON_POSITIVE;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -52,7 +50,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.Uri.Builder;
@@ -67,8 +64,6 @@ import android.widget.TextView;
 
 import com.googlecode.asmack.Attribute;
 import com.googlecode.asmack.Stanza;
-
-import edu.sumb.mygooglemap.MyGoogleMapActivity;
 
 /**
  * Main chat activity.
@@ -322,7 +317,7 @@ public class Chat extends Activity implements OnClickListener {
 				
 				// don't bother dismissing if the activity is already destroyed, as
 				// doing so will throw an exception.
-				if (!isDestroyed) {
+				if (!Chat.this.isDestroyed) {
 					dialog.dismiss();
 				}
 

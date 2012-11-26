@@ -19,7 +19,9 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 
 import com.googlecode.asmack.Attribute;
 import com.googlecode.asmack.Stanza;
@@ -156,7 +158,7 @@ public class Interface extends TabActivity implements Runnable {
         setContentView(R.layout.main);
         
         Resources res = getResources(); // Resources object get Drawable
-        TabHost tabHost = getTabHost();
+        final TabHost tabHost = getTabHost();
         TabHost.TabSpec spec;
         Intent intent;
         
@@ -201,6 +203,17 @@ public class Interface extends TabActivity implements Runnable {
 //        spec = tabHost.newTabSpec("gps").setIndicator("GPS", res.getDrawable(R.drawable.gps_icon)).setContent(intent);
 //        tabHost.addTab(spec);
 
+        
+        tabHost.setOnTabChangedListener(new OnTabChangeListener()
+        {
+	        @Override
+			public void onTabChanged(String tabId)
+            {
+	            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+	            imm.hideSoftInputFromWindow(tabHost.getApplicationWindowToken(), 0);
+            }
+        });
+        
         tabHost.setCurrentTab(1);
         
         this.notificationManager.cancel(toFrom, 1);
@@ -239,11 +252,11 @@ public class Interface extends TabActivity implements Runnable {
 		String pingPeriodSeconds = this.getString(R.string.ping_period_seconds);
 		long time = Long.valueOf(pingPeriodSeconds).longValue() * 1000;
 
-		String msg = this.getString(R.string.ping_message);
+//		String msg = this.getString(R.string.ping_message);
 		
 		while (true) {
 
-			//Chat.sendMessage(this, msg, this.to, this.from);
+//			Chat.sendMessage(this, msg, this.to, this.from);
 	        
 			try {
 				Thread.sleep(time);

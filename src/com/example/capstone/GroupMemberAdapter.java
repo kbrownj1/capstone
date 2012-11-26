@@ -1,6 +1,7 @@
 package com.example.capstone;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
@@ -80,8 +81,10 @@ public class GroupMemberAdapter extends BaseAdapter{
 	     Log.d("MMMC", GroupMemberAdapter.class.getSimpleName() + " " + member.toString());
 	     	
 	     holder.name.setText(member.getName());
-	     holder.latitude.setText("Lat: " + member.getLat());
-	     holder.longitude.setText("Long: " + member.getLong());
+	     String latString = String.format(Locale.US, "%.4f", member.getLat());
+	     String lonString = String.format(Locale.US, "%.4f", member.getLong());
+	     holder.latitude.setText( "Lat: "  + latString);
+	     holder.longitude.setText("Long: " + lonString);
 	     
 	     if (member.isEmergency()) {
 	    	 holder.emergency.setVisibility(View.VISIBLE);

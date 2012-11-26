@@ -136,6 +136,11 @@ public class ChatNotificationListener implements PacketListener {
     	if( packet instanceof Message) {
     		Message msg = (Message)packet;
     		String text = msg.getBody();
+			
+    	   	if (text == null || text.trim().length() == 0) {
+    	  		Log.d("CNL", "ERIK: MESSAGE PACKET LACKS A MESSAGE!!!");
+    	  		return;
+    	   	}	
     		
     		// Extract name
     		String messageFrom = StringUtils.parseResource( msg.getFrom() );
@@ -209,11 +214,6 @@ public class ChatNotificationListener implements PacketListener {
             			return;
         			}
         		}
-        				
-        	   	if (text == null || text.trim().length() == 0) {
-        	  		Log.d("CNL", "ERIK: MESSAGE PACKET LACKS A MESSAGE!!!");
-        	  		return;
-        	   	}	
         			
        			//Log.d("CNL", "ERIK: MUC EXTENSION FOUND");
         	   	

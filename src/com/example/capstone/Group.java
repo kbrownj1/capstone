@@ -24,7 +24,6 @@ public class Group extends Activity{
 	private GroupMemberAdapter adapter;
 	
 	private SQLiteDatabase database;
-	private Cursor	resultsCursor;
 	
 	private Context context;
 	
@@ -70,34 +69,41 @@ public class Group extends Activity{
 	 * state of the database for member information.
 	 */
 	private void refreshMembers() {
-		// Columns to query from the user_info table
-		String columns[] = {"name", "lat", "long", "in_trouble"};
-		
-		//run the query
-		this.resultsCursor = this.database.query("user_info", columns, null, null, null, null, null);
-		
-		// Parse the results and create a group member for each entry
-		Log.i(TAG, className + ": number of members in the group " + this.resultsCursor.getCount());
-		
-		this.members.clear();
-		
-		if (this.resultsCursor.moveToFirst()){
-			do {
-				String name         = this.resultsCursor.getString(0);
-				Double lat          = this.resultsCursor.getDouble(1);
-				Double lng          = this.resultsCursor.getDouble(2);
-				boolean isEmergency = this.resultsCursor.getInt(3) != 0;
-//				long emergencyTime  = this.resultsCursor.getInt(4);
-				
-				Log.i(TAG, className + " adding " + name + " to group at location " + lat + " " + lng + ", emergency=" + isEmergency);
-				
-				GroupMember member = new GroupMember(name, lat, lng, isEmergency);
-				this.members.add(member);
-				
-			} while (this.resultsCursor.moveToNext());
-		} else {
-			Log.i(TAG, className + " there are no members present in the group");
-			this.members.add(new GroupMember("No one is in your group", SAN_JOSE_LAT, SAN_JOSE_LON, false));
+		Cursor	resultsCursor = null;
+		try {
+			// Columns to query from the user_info table
+			String columns[] = {"name", "lat", "long", "in_trouble"};
+			
+			//run the query
+			resultsCursor = this.database.query("user_info", columns, null, null, null, null, null);
+			
+			// Parse the results and create a group member for each entry
+			Log.i(TAG, className + ": number of members in the group " + resultsCursor.getCount());
+			
+			this.members.clear();
+			
+			if (resultsCursor.moveToFirst()){
+				do {
+					String name         = resultsCursor.getString(0);
+					Double lat          = resultsCursor.getDouble(1);
+					Double lng          = resultsCursor.getDouble(2);
+					boolean isEmergency = resultsCursor.getInt(3) != 0;
+	//				long emergencyTime  = resultsCursor.getInt(4);
+					
+					Log.i(TAG, className + " adding " + name + " to group at location " + lat + " " + lng + ", emergency=" + isEmergency);
+					
+					GroupMember member = new GroupMember(name, lat, lng, isEmergency);
+					this.members.add(member);
+					
+				} while (resultsCursor.moveToNext());
+			} else {
+				Log.i(TAG, className + " there are no members present in the group");
+				this.members.add(new GroupMember("No one is in your group", SAN_JOSE_LAT, SAN_JOSE_LON, false));
+			}
+		} finally {
+			if (resultsCursor != null) {
+				resultsCursor.close();
+			}
 		}
 	
 	}
